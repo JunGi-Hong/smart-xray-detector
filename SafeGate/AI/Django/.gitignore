@@ -1,0 +1,33 @@
+# 보안 및 환경 설정
+.env
+.env.*
+secrets.json
+
+# 데이터베이스
+# Django 내부용 파일 DB는 공유하지 않음
+db.sqlite3
+db.sqlite3-journal
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 가상환경 폴더
+venv/
+env/
+.venv/
+
+# 정적 파일 및 미디어
+# collectstatic 명령어로 생성된 폴더
+staticfiles/
+
+# 업로드된 미디어 파일 (폴더 구조 유지를 위해 .gitkeep 제외하고 무시)
+media/*
+!media/.gitkeep
+
+# IDE 설정
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
