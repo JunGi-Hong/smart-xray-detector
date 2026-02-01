@@ -18,6 +18,11 @@ public class Event {
     @Column(name = "start_time")
     private String startTime;
 
+    // [추가된 부분] ERD의 title (text) 반영
+    // ERD상 text 타입이므로 columnDefinition을 사용하여 DB 반영 시 TEXT 타입이 되도록 설정
+    @Column(name = "title", columnDefinition = "TEXT")
+    private String title;
+
     // Users 테이블과의 관계 (FK)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
