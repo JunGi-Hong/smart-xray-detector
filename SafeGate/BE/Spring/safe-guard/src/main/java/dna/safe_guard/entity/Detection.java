@@ -18,7 +18,8 @@ public class Detection {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    // type 1 ~ 27
+    // type 0 ~ 37
+    private Integer type0;
     private Integer type1;
     private Integer type2;
     private Integer type3;
@@ -46,6 +47,17 @@ public class Detection {
     private Integer type25;
     private Integer type26;
     private Integer type27;
+    private Integer type28;
+    private Integer type29;
+    private Integer type30;
+    private Integer type31;
+    private Integer type32;
+    private Integer type33;
+    private Integer type34;
+    private Integer type35;
+    private Integer type36;
+    private Integer type37;
+
 
     // 연관관계 편의 메서드
     public void setEvent(Event event) {
