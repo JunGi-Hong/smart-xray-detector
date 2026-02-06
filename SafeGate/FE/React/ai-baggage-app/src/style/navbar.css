@@ -1,0 +1,56 @@
+/*main navbar css*/
+
+.main-header {
+    display: flex;
+    background-color: #EAE4D5;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+}
+
+.header-right a {
+    text-decoration: none;
+    color: #273240;
+}
+
+.header-right a,
+.header-right button {
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 0.85rem;
+    line-height: 1;
+}
+
+.nav-item {
+    display: inline-flex;
+    /* 핵심 */
+    align-items: center;
+    /* 핵심 */
+    gap: 6px;
+
+    height: 20px;
+    /* 기준 높이 통일 */
+    padding: 0 12px;
+
+    font-size: 0.85rem;
+    line-height: 1;
+    text-decoration: none;
+    color: #333;
+}
+
+
+.client-icon {
+    width: 11px;
+    height: 13px;
+    padding: 0px;
+}
+
+.logout-button {
+    color: #273240;
+    border: none;
+    background: none;
+    cursor: pointer;
+
+}
