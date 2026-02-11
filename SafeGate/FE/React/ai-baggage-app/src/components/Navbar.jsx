@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../style/navbar.css'
 import ClientIcon from '../assets/client.png'
 import LogoutIcon from '../assets/logout.png'
+import HistoryIcon from '../assets/history.png'
 import { useUser } from '../contexts/UserContext'
 
 export default function Navbar() {
@@ -21,11 +22,11 @@ export default function Navbar() {
 
             <nav className='header-right'>
                 <Link to='/history' className='nav-item'>
-                    <img src={ClientIcon} className='client-icon' />
+                    <img src={HistoryIcon} className='client-icon' />
                     탐지 이력
                 </Link>
                 <Link to='/user/verify-password' className='nav-item'>
-                    <img src={LogoutIcon} className='client-icon' />
+                    <img src={ClientIcon} className='client-icon' />
                     회원정보 수정
                 </Link>
                 <button type='button' className='nav-item logout-button' onClick={handleLogout}>
