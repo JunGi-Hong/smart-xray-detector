@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../style/navbar.css'
 import ClientIcon from '../assets/client.png'
 import LogoutIcon from '../assets/logout.png'
-import { useUser } from '../contexts/UserContext';
+import { useUser } from '../contexts/UserContext'
 
 export default function Navbar() {
     const navigate = useNavigate()
