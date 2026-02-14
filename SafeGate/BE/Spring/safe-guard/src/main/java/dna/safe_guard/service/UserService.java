@@ -2,12 +2,16 @@ package dna.safe_guard.service;
 
 import dna.safe_guard.dto.UserRequestDto;
 import dna.safe_guard.dto.UserResponseDto;
+import dna.safe_guard.entity.TokenBlacklist;
 import dna.safe_guard.entity.User;
+import dna.safe_guard.repository.TokenBlacklistRepository;
 import dna.safe_guard.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final TokenBlacklistRepository tokenBlacklistRepository;
 
     @Transactional
     public void register(UserRequestDto.Register dto) {
@@ -43,5 +48,21 @@ public class UserService {
                 .refreshToken(jwtTokenProvider.createRefreshToken(user.getEmail()))
                 .username(user.getName())
                 .build();
+    }
+
+    @Transactional
+    public void logout(String token) {
+        // 토큰의 남은 유효 시간 확인
+        long expirationMillis = jwtTokenProvider.getExpiration(token);
+
+        if (expirationMillis > 0) {
+            // 토큰을 블랙리스트에 추가
+            TokenBlacklist blacklist = TokenBlacklist.builder()
+                    .token(token)
+                    .expiresAt(LocalDateTime.now().plusSeconds(expirationMillis / 1000))
+                    .build();
+
+            tokenBlacklistRepository.save(blacklist);
+        }
     }
 }

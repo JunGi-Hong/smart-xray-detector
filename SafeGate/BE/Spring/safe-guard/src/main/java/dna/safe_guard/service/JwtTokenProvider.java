@@ -45,4 +45,20 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
+    public long getExpiration(String token) {
+        try {
+            Date expiration = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getExpiration();
+
+            long now = new Date().getTime();
+            return expiration.getTime() - now; // 남은 시간(밀리초)
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }

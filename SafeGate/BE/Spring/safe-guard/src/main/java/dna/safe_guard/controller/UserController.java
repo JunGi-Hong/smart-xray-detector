@@ -25,8 +25,14 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<UserResponseDto.Message> logout() {
-        // 실제로는 클라이언트에서 토큰을 지우거나 블랙리스트 처리를 합니다.
+    public ResponseEntity<UserResponseDto.Message> logout(
+            @RequestHeader("Authorization") String authHeader) {
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7); // "Bearer " 제거
+            userService.logout(token); // 블랙리스트에 추가
+        }
+
         return ResponseEntity.ok(new UserResponseDto.Message("success"));
     }
 }

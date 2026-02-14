@@ -23,7 +23,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/register", "/user/login", "/user/token").permitAll()
+                        .requestMatchers("/user/register", "/user/login", "/user/token", "/user/logout").permitAll()
                         .anyRequest().authenticated()
                 )
                 // 필터 생성 시 두 개의 의존성 주입
