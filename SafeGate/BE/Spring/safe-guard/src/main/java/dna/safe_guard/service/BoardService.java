@@ -1,6 +1,8 @@
 package dna.safe_guard.service;
 
-import dna.safe_guard.dto.*;
+import dna.safe_guard.dto.BoardDetailResponseDto;
+import dna.safe_guard.dto.BoardListResponseDto;
+import dna.safe_guard.dto.BoardPageResponseDto;
 import dna.safe_guard.entity.Detection;
 import dna.safe_guard.entity.Event;
 import dna.safe_guard.repository.DetectionRepository;
@@ -24,10 +26,12 @@ public class BoardService {
     private final EventRepository eventRepository;
     private final DetectionRepository detectionRepository;
 
-    // 실제 이미지가 저장된 서버 주소 (배포 시 변경 필요)
-    private static final String IMAGE_URL_PREFIX = "https://my-server.com/images/";
+    // 이미지 경로 (나중에 배포 시 주소 변경 필요!!!)
+    private static final String IMAGE_URL_PREFIX = "http://localhost:8080/images/";
 
+    // =========================================================
     // 1. 목록 조회
+    // =========================================================
     @Transactional(readOnly = true)
     public BoardPageResponseDto getBoardList(int pageNumber) {
         int pageIndex = (pageNumber < 1) ? 0 : pageNumber - 1;
@@ -55,30 +59,43 @@ public class BoardService {
                 .build();
     }
 
+    // =========================================================
     // 2. 상세 조회
+    // =========================================================
     @Transactional(readOnly = true)
     public BoardDetailResponseDto getBoardDetail(Long eventId) {
-        Detection detection = detectionRepository.findByEventId(eventId)
-                .orElseThrow(() -> new IllegalArgumentException("not found"));
+        // (1) Event 조회
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + eventId));
 
-        // 파일명 생성 로직
-        String timeStr = detection.getEvent().getStartTime() != null ? detection.getEvent().getStartTime() : "";
-        String fileName = timeStr.replace(":", "").replace(" ", "") + ".png";
+        // (2) Detection 조회
+        Detection detection = detectionRepository.findByEventId(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("탐지 데이터가 없습니다."));
+
+        // (3) 시간 정보를 파일명으로 변환 (2026-02-15 14:00:00 -> 20260215140000.png)
+        String timeStr = event.getStartTime();
+        String fileName = "default.png";
+
+        if (timeStr != null && !timeStr.isEmpty()) {
+            fileName = timeStr.replace("-", "")
+                    .replace(":", "")
+                    .replace(" ", "")
+                    + ".png"; // ⚠️ 주의: 실제 파일이 .jpg면 여기를 .jpg로 수정하세요!
+        }
 
         return BoardDetailResponseDto.builder()
-                .src(IMAGE_URL_PREFIX + fileName)
-                .startTime(detection.getEvent().getStartTime())
-                // [수정 포인트] Entity 메서드 대신, 아래에 만든 private 메서드를 사용!
+                .src(IMAGE_URL_PREFIX + fileName) // 완성된 주소
+                .startTime(event.getStartTime())
                 .detect(extractDetectedList(detection))
                 .build();
     }
 
-    // 👇 [추가] Entity를 건드리지 않고 여기서 리스트로 변환하는 메서드
+    // =========================================================
+    // 3. 탐지 리스트 추출 (0~37번 전체 포함)
+    // =========================================================
     private List<Integer> extractDetectedList(Detection d) {
         List<Integer> list = new ArrayList<>();
 
-        // type0 ~ type37 까지 null이 아니고 0보다 크면 리스트에 추가
-        // (Entity를 수정 못하므로 여기서 일일이 체크해줍니다)
         if (isValid(d.getType0())) list.add(0);
         if (isValid(d.getType1())) list.add(1);
         if (isValid(d.getType2())) list.add(2);
@@ -121,7 +138,6 @@ public class BoardService {
         return list;
     }
 
-    // null 체크 및 값 확인을 위한 헬퍼 메서드
     private boolean isValid(Integer value) {
         return value != null && value > 0;
     }
