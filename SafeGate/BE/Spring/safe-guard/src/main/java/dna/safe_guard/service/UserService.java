@@ -73,4 +73,36 @@ public class UserService {
             tokenBlacklistRepository.save(blacklistedRefreshToken);
         }
     }
+
+    @Transactional
+    public void updateProfile(UserRequestDto.UpdateProfile dto, String token) {
+        // 1. 토큰에서 이메일 추출
+        String email = jwtTokenProvider.getEmail(token);
+
+        // 2. 사용자 조회
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 3. 이름 수정
+        if (dto.getName() != null && !dto.getName().isEmpty()) {
+            user.setName(dto.getName());
+        }
+
+        // 4. 전화번호 수정
+        if (dto.getPhoneNumber() != null && !dto.getPhoneNumber().isEmpty()) {
+            user.setPhoneNumber(dto.getPhoneNumber());
+        }
+
+        // 5. 비밀번호 수정
+        if (dto.getNewPassword() != null && !dto.getNewPassword().isEmpty()) {
+            // pw1과 pw2가 일치하는지 확인
+            if (!dto.getNewPassword().equals(dto.getNewPassword2())) {
+                throw new IllegalArgumentException("pw inconsistency");
+            }
+            user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        }
+
+        // 6. 변경사항 저장
+        userRepository.save(user);
+    }
 }

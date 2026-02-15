@@ -41,4 +41,20 @@ public class UserController {
 
         return ResponseEntity.ok(new UserResponseDto.Message("success"));
     }
+
+    @PutMapping("/edit-profile")
+    public ResponseEntity<?> updateProfile(
+            @RequestBody UserRequestDto.UpdateProfile dto,
+            @RequestHeader("Authorization") String bearerToken) {
+
+        try {
+            // Bearer 토큰에서 실제 토큰 추출
+            String token = bearerToken.substring(7);
+            userService.updateProfile(dto, token);
+            return ResponseEntity.ok(new UserResponseDto.Message("success"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(new UserResponseDto.Fail(e.getMessage()));
+        }
+    }
 }
