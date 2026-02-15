@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
+import dna.safe_guard.entity.TokenBlacklist;
+
 
 import java.time.LocalDateTime;
 
@@ -51,18 +54,23 @@ public class UserService {
     }
 
     @Transactional
-    public void logout(String token) {
-        // 토큰의 남은 유효 시간 확인
-        long expirationMillis = jwtTokenProvider.getExpiration(token);
-
-        if (expirationMillis > 0) {
-            // 토큰을 블랙리스트에 추가
-            TokenBlacklist blacklist = TokenBlacklist.builder()
-                    .token(token)
-                    .expiresAt(LocalDateTime.now().plusSeconds(expirationMillis / 1000))
+    public void logout(String accessToken, String refreshToken) {
+        // 1. Access Token 블랙리스트 추가
+        if (accessToken != null && !accessToken.trim().isEmpty()) {
+            TokenBlacklist blacklistedAccessToken = TokenBlacklist.builder()
+                    .token(accessToken)
+                    .expiresAt(LocalDateTime.now().plusMinutes(30)) // Access Token 만료 시간
                     .build();
+            tokenBlacklistRepository.save(blacklistedAccessToken);
+        }
 
-            tokenBlacklistRepository.save(blacklist);
+        // 2. Refresh Token 블랙리스트 추가
+        if (refreshToken != null && !refreshToken.trim().isEmpty()) {
+            TokenBlacklist blacklistedRefreshToken = TokenBlacklist.builder()
+                    .token(refreshToken)
+                    .expiresAt(LocalDateTime.now().plusHours(24)) // Refresh Token 만료 시간
+                    .build();
+            tokenBlacklistRepository.save(blacklistedRefreshToken);
         }
     }
 }

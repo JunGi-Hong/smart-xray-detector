@@ -6,6 +6,7 @@ import dna.safe_guard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -26,12 +27,17 @@ public class UserController {
 
     @PostMapping("/logout")
     public ResponseEntity<UserResponseDto.Message> logout(
-            @RequestHeader("Authorization") String authHeader) {
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody(required = false) Map<String, String> body) {
 
+        String accessToken = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7); // "Bearer " 제거
-            userService.logout(token); // 블랙리스트에 추가
+            accessToken = authHeader.substring(7); // "Bearer " 제거
         }
+
+        String refreshToken = body != null ? body.get("refresh-token") : null;
+
+        userService.logout(accessToken, refreshToken); // 블랙리스트에 추가
 
         return ResponseEntity.ok(new UserResponseDto.Message("success"));
     }
