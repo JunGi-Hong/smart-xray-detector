@@ -6,4 +6,3 @@ export const mockEvents = Array.from({ length: 57 }, (_, i) => ({
     username: '홍길동',
 }));
 
-

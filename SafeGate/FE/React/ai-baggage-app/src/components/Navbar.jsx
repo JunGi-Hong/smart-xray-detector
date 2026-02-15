@@ -9,16 +9,37 @@ export default function Navbar() {
     const navigate = useNavigate()
     const user = useUser()
 
-    const handleLogout = (e) => {
+    const handleLogout = async (e) => {
         //로그 아웃 구현
-        //일단은 로그인 페이지로 복귀하게
-        navigate('/user/login')
+
+        try {
+            const token = localStorage.getItem('accessToken')
+            if (token) {
+                await fetch('/user/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+            }
+
+        } catch (error) {
+            console.error("로그 아웃 중 서버 에러 발생(무시하고 진행)")
+        } finally {
+            localStorage.removeItem('accessToken')
+            localStorage.removeItem('removeToken')
+            localStorage.removeItem('username')
+            alert('로그아웃 되었습니다.')
+            navigate('/user/login')
+        }
+
     }
 
 
     return (
         <header className='main-header'>
-            <div className='header-left'>{user.name + ' 님'}</div>
+            <div className='header-left'><strong>{user.name}</strong>{'님'}</div>
 
             <nav className='header-right'>
                 <Link to='/history' className='nav-item'>

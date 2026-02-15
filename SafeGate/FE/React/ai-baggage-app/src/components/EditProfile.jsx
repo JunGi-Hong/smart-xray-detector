@@ -7,7 +7,6 @@ export default function EditProfile() {
     const navigate = useNavigate()
     const user = useUser()
 
-    //patch로 처리
     const handleSumbit = (e) => {
         e.preventDefault()
         //TODO: send edited user info to backend server
