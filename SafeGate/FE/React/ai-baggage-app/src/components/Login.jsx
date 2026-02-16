@@ -20,11 +20,11 @@ export default function Login() {
     }
 
     const handleLogin = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
 
         if (!loginData.email || !loginData.password) {
-            alert('이메일과 비밀번호를 모두 입력해주세요.');
-            return;
+            alert('이메일과 비밀번호를 모두 입력해주세요.')
+            return
         }
 
         try {
@@ -37,9 +37,9 @@ export default function Login() {
                     email: loginData.email,
                     password: loginData.password
                 }),
-            });
+            })
 
-            const data = await response.json();
+            const data = await response.json()
 
             if (response.ok) {
                 //username,access token, refresh token local storage에 저장

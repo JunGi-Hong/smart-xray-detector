@@ -13,11 +13,11 @@ export default function EventTable({ events }) {
             <tbody>
                 {events.map(
                     (event) => (
-                        <tr key={event.id}>
-                            <td>{event.id}</td>
-                            <td>{event.time}</td>
+                        <tr key={event['event-id']}>
+                            <td>{event['event-id']}</td>
+                            <td>{event['start-time']}</td>
                             <td>{event.title}</td>
-                            <td>{event.username}</td>
+                            <td>{event['user-name']}</td>
                         </tr>
                     )
                 )}

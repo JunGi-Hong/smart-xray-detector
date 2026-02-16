@@ -8,6 +8,7 @@ import { useUser } from '../contexts/UserContext'
 export default function Navbar() {
     const navigate = useNavigate()
     const user = useUser()
+    const username = localStorage.getItem('username')
 
     const handleLogout = async (e) => {
         //로그 아웃 구현
@@ -39,10 +40,10 @@ export default function Navbar() {
 
     return (
         <header className='main-header'>
-            <div className='header-left'><strong>{user.name}</strong>{'님'}</div>
+            <div className='header-left'><strong>{username}</strong>{'님'}</div>
 
             <nav className='header-right'>
-                <Link to='/history' className='nav-item'>
+                <Link to='/history?page=1' className='nav-item'>
                     <img src={HistoryIcon} className='client-icon' />
                     탐지 이력
                 </Link>
