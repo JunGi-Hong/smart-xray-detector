@@ -7,6 +7,7 @@ import dna.safe_guard.entity.Detection;
 import dna.safe_guard.entity.Event;
 import dna.safe_guard.repository.DetectionRepository;
 import dna.safe_guard.repository.EventRepository;
+import dna.safe_guard.dto.RecentEventDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +33,7 @@ public class BoardService {
     private static final String IMAGE_URL_PREFIX = "http://localhost:8080/images/";
 
     // =========================================================
-    // 1. 목록 조회
+    // 1. 목록 조회 (기존 유지)
     // =========================================================
     @Transactional(readOnly = true)
     public BoardPageResponseDto getBoardList(int pageNumber) {
@@ -60,19 +63,16 @@ public class BoardService {
     }
 
     // =========================================================
-    // 2. 상세 조회
+    // 2. 상세 조회 (기존 유지)
     // =========================================================
     @Transactional(readOnly = true)
     public BoardDetailResponseDto getBoardDetail(Long eventId) {
-        // (1) Event 조회
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + eventId));
 
-        // (2) Detection 조회
         Detection detection = detectionRepository.findByEventId(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("탐지 데이터가 없습니다."));
 
-        // (3) 시간 정보를 파일명으로 변환 (2026-02-15 14:00:00 -> 20260215140000.png)
         String timeStr = event.getStartTime();
         String fileName = "default.png";
 
@@ -80,22 +80,47 @@ public class BoardService {
             fileName = timeStr.replace("-", "")
                     .replace(":", "")
                     .replace(" ", "")
-                    + ".png"; // ⚠️ 주의: 실제 파일이 .jpg면 여기를 .jpg로 수정하세요!
+                    + ".png";
         }
 
         return BoardDetailResponseDto.builder()
-                .src(IMAGE_URL_PREFIX + fileName) // 완성된 주소
+                .src(IMAGE_URL_PREFIX + fileName)
                 .startTime(event.getStartTime())
                 .detect(extractDetectedList(detection))
                 .build();
     }
 
     // =========================================================
-    // 3. 탐지 리스트 추출 (0~37번 전체 포함)
+    // 3. 최근 7일 데이터 조회 (새로 추가! 🚀)
+    // =========================================================
+    @Transactional(readOnly = true)
+    public List<RecentEventDto> getRecentEventList() { // 👈 타입을 List<Event>에서 List<RecentEventDto>로 변경
+        String sevenDaysAgo = LocalDateTime.now().minusDays(7)
+                .format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+
+        List<Event> events = eventRepository.findAllByStartTimeGreaterThanEqual(sevenDaysAgo);
+
+        // 엔티티를 DTO로 변환하는 과정이 반드시 필요합니다!
+        return events.stream().map(event -> {
+            List<Integer> detectList = detectionRepository.findByEventId(event.getId())
+                    .map(this::extractDetectedList)
+                    .orElse(new java.util.ArrayList<>());
+
+            return RecentEventDto.builder()
+                    .id(event.getId())
+                    .startTime(event.getStartTime())
+                    .title(event.getTitle())
+                    .detect(detectList)
+                    .build();
+        }).collect(java.util.stream.Collectors.toList());
+    }
+
+    // =========================================================
+    // 4. 보조 메서드들
     // =========================================================
     private List<Integer> extractDetectedList(Detection d) {
         List<Integer> list = new ArrayList<>();
-
+        // ... (기존 isValid 체크 로직들 0~37번 그대로 유지)
         if (isValid(d.getType0())) list.add(0);
         if (isValid(d.getType1())) list.add(1);
         if (isValid(d.getType2())) list.add(2);
