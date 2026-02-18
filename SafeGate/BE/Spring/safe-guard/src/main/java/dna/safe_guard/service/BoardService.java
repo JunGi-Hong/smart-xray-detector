@@ -94,25 +94,24 @@ public class BoardService {
     // 3. 최근 7일 데이터 조회 (새로 추가! 🚀)
     // =========================================================
     @Transactional(readOnly = true)
-    public List<RecentEventDto> getRecentEventList() { // 👈 타입을 List<Event>에서 List<RecentEventDto>로 변경
+    public List<RecentEventDto> getRecentEventList() {
+        // 1. 최근 7일 시점 계산
         String sevenDaysAgo = LocalDateTime.now().minusDays(7)
                 .format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
 
+        // 2. 해당 기간의 이벤트 조회
         List<Event> events = eventRepository.findAllByStartTimeGreaterThanEqual(sevenDaysAgo);
 
-        // 엔티티를 DTO로 변환하는 과정이 반드시 필요합니다!
+        // 3. 각 이벤트에서 탐지 정보(detect)만 뽑아서 DTO 리스트로 변환
         return events.stream().map(event -> {
             List<Integer> detectList = detectionRepository.findByEventId(event.getId())
-                    .map(this::extractDetectedList)
-                    .orElse(new java.util.ArrayList<>());
+                    .map(this::extractDetectedList) // 기존 추출 로직 활용
+                    .orElse(new ArrayList<>());
 
             return RecentEventDto.builder()
-                    .id(event.getId())
-                    .startTime(event.getStartTime())
-                    .title(event.getTitle())
-                    .detect(detectList)
+                    .detect(detectList) // 오직 이것만 담습니다!
                     .build();
-        }).collect(java.util.stream.Collectors.toList());
+        }).collect(Collectors.toList());
     }
 
     // =========================================================
