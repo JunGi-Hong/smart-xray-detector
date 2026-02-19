@@ -57,6 +57,7 @@ export default function EditProfile() {
     const handleSumbit = async (e) => {
         e.preventDefault()
         //TODO: send edited user info to backend server
+        //비밀번호 일치 여부 확인??
         /*try {
             const response = await fetch('/user/edit-profile', {
                 method: 'POST',
