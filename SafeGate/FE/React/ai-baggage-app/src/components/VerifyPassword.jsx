@@ -11,10 +11,34 @@ export default function VerifyPassword() {
         setPassword(e.target.value)
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        //TODO: verify password
-        const success = true
+
+        /*try {
+            const response = await fetch('/user/verify-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    //data to verify user
+                    password: password
+                })
+            })
+            if (response.ok) {
+                navigate('/edit-profile')
+            } else {
+                console.log(response.message)
+                alert('잘못된 비밀번호. 다시 입력하세요.')
+            }
+
+        }
+        catch (error) {
+            console.error('Verifiy password error')
+            alert('오류 발생')
+        } */
+
+
         if (success) {
             navigate('/user/edit-profile')
         }
