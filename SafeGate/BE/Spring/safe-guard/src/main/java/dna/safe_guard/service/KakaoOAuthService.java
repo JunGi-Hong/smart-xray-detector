@@ -30,24 +30,19 @@ public class KakaoOAuthService {
     @Value("${kakao.redirect-uri}")
     private String redirectUri;
 
+    // 1. 여기에 시크릿 키를 넣습니다. (ON으로 설정한 '카카오 로그인'용 코드를 쓰세요)
+    @Value("${kakao.client-secret}")
+    private String clientSecret;
+
     private static final String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
     private static final String KAKAO_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me";
 
-    /**
-     * 인가 코드로 카카오 토큰 발급 후 로그인 처리
-     */
     @Transactional
     public UserResponseDto.Token kakaoLogin(String code) {
-        // 1. 인가 코드로 카카오 Access Token 발급
         KakaoResponseDto.Token kakaoToken = getKakaoToken(code);
-
-        // 2. 카카오 Access Token으로 사용자 정보 조회
         KakaoResponseDto.UserInfo userInfo = getKakaoUserInfo(kakaoToken.getAccessToken());
-
-        // 3. 사용자 정보로 회원가입 또는 로그인 처리
         User user = findOrCreateUser(userInfo);
 
-        // 4. 자체 JWT 발급
         String accessToken = jwtTokenProvider.createAccessToken(user.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail());
 
@@ -58,10 +53,11 @@ public class KakaoOAuthService {
                 .build();
     }
 
-    /**
-     * 카카오 인가 코드 → 카카오 Access Token 교환
-     */
     private KakaoResponseDto.Token getKakaoToken(String code) {
+        System.out.println("DEBUG >>> clientId: [" + clientId + "]");
+        System.out.println("DEBUG >>> redirectUri: [" + redirectUri + "]");
+        System.out.println("DEBUG >>> code: [" + code + "]");
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -70,6 +66,9 @@ public class KakaoOAuthService {
         params.add("client_id", clientId);
         params.add("redirect_uri", redirectUri);
         params.add("code", code);
+
+        // 2. 파라미터에 시크릿 키 추가 (ON 상태일 때 필수)
+        params.add("client_secret", clientSecret);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
@@ -86,9 +85,7 @@ public class KakaoOAuthService {
         return response.getBody();
     }
 
-    /**
-     * 카카오 Access Token으로 사용자 정보 조회
-     */
+    // ... (이하 getKakaoUserInfo, findOrCreateUser 메서드는 동일)
     private KakaoResponseDto.UserInfo getKakaoUserInfo(String kakaoAccessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(kakaoAccessToken);
@@ -109,13 +106,9 @@ public class KakaoOAuthService {
         return response.getBody();
     }
 
-    /**
-     * 이메일로 기존 회원 조회, 없으면 자동 회원가입
-     */
     private User findOrCreateUser(KakaoResponseDto.UserInfo userInfo) {
         String email = userInfo.getEmail();
         if (email == null) {
-            // 카카오 계정에 이메일이 없을 경우 kakaoId 기반으로 임시 이메일 생성
             email = "kakao_" + userInfo.getId() + "@kakao.com";
         }
 
@@ -124,13 +117,11 @@ public class KakaoOAuthService {
             return existing.get();
         }
 
-        // 신규 사용자 자동 생성
         String nickname = userInfo.getNickname() != null ? userInfo.getNickname() : "카카오사용자";
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setUsername(email);
         newUser.setName(nickname);
-        // 소셜 로그인 사용자는 비밀번호를 랜덤 UUID로 설정 (직접 로그인 불가)
         newUser.setPassword(UUID.randomUUID().toString());
         return userRepository.save(newUser);
     }

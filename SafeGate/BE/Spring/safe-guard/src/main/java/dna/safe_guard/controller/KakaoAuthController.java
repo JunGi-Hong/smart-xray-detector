@@ -33,6 +33,7 @@ public class KakaoAuthController {
      * 카카오 redirect_uri를 백엔드로 직접 설정한 경우 사용합니다.
      * redirect_uri를 프론트엔드로 설정했다면 이 엔드포인트는 사용하지 않아도 됩니다.
      */
+
     @GetMapping("/kakao-callback")
     public ResponseEntity<UserResponseDto.Token> kakaoCallback(
             @RequestParam("code") String code) {
