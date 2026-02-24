@@ -37,7 +37,7 @@ export default function VerifyPassword() {
             console.error('Verifiy password error')
             alert('오류 발생')
         } */
-
+        const success = true
 
         if (success) {
             navigate('/user/edit-profile')

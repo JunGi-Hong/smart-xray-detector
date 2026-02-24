@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard'
 import VerifyPassword from './components/VerifyPassword'
 import EditProfile from './components/EditProfile'
 import History from './components/History'
+import EventDetail from './components/EventDetail'
 
 import { UserContext } from './contexts/UserContext'
 
@@ -30,6 +31,7 @@ function App() {
           {/*use protected route for security*/}
           <Route path='/user/edit-profile' element={<EditProfile />} />
           <Route path='/history' element={<History />} />
+          <Route path='/history/detail/:eventID' element={<EventDetail />} />
           <Route path='/' element={<Navigate to='/user/login' />} />
         </Routes>
       </BrowserRouter>

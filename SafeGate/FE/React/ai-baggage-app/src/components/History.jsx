@@ -42,7 +42,7 @@ export default function History() {
                 const token = localStorage.getItem('accessToken')
                 console.log("현재 토큰 값:", token);
                 console.log("보낼 헤더 값:", `Bearer ${token}`);
-                const response = await fetch('/board/1', {
+                const response = await fetch(`/board/${currentPage}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

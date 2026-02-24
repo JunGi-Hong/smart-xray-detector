@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../style/uploadbox.css'
 
 export default function UploadBox() {
+    const navigate = useNavigate()
     const [fileName, setFileName] = useState('')
 
     const handleDragOver = (e) => {
@@ -20,6 +22,9 @@ export default function UploadBox() {
     const handleSubmit = (e) => {
         e.preventDefault()
         //이미지 파일 업로드 처리
+        //탐지 되면 event id 받아야함
+        //if detected -> navigate to board/details/{event-id} page 
+        navigate(`/history/detail/${1}`)
     }
 
     const handleFileChange = (e) => {
