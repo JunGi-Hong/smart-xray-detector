@@ -7,7 +7,6 @@ import dna.safe_guard.entity.Detection;
 import dna.safe_guard.entity.Event;
 import dna.safe_guard.repository.DetectionRepository;
 import dna.safe_guard.repository.EventRepository;
-import dna.safe_guard.dto.RecentEventDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,10 +15,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList; // 나중에 빈 리스트 반환할 때 필요할 수 있습니다.
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,24 +95,29 @@ public class BoardService {
     // 3. 최근 7일 데이터 조회 (새로 추가! 🚀)
     // =========================================================
     @Transactional(readOnly = true)
-    public List<RecentEventDto> getRecentEventList() {
+    public Map<Integer, Integer> getRecentTypeCounts() {
         // 1. 최근 7일 시점 계산
         String sevenDaysAgo = LocalDateTime.now().minusDays(7)
                 .format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
 
-        // 2. 해당 기간의 이벤트 조회
+        // 2. 해당 기간의 모든 이벤트 조회
         List<Event> events = eventRepository.findAllByStartTimeGreaterThanEqual(sevenDaysAgo);
 
-        // 3. 각 이벤트에서 탐지 정보(detect)만 뽑아서 DTO 리스트로 변환
-        return events.stream().map(event -> {
-            List<Integer> detectList = detectionRepository.findByEventId(event.getId())
-                    .map(this::extractDetectedList) // 기존 추출 로직 활용
-                    .orElse(new ArrayList<>());
+        // 3. 타입별 합계 계산용 Map 생성
+        Map<Integer, Integer> typeCounts = new HashMap<>();
 
-            return RecentEventDto.builder()
-                    .detect(detectList) // 오직 이것만 담습니다!
-                    .build();
-        }).collect(Collectors.toList());
+        for (Event event : events) {
+            // 각 이벤트의 탐지 데이터를 가져와서 유효한 타입 번호들만 추출
+            detectionRepository.findByEventId(event.getId()).ifPresent(d -> {
+                List<Integer> detectedTypes = extractDetectedList(d); // 기존 0~37 체크 로직 활용
+                for (Integer type : detectedTypes) {
+                    // 타입별로 카운트 증가
+                    typeCounts.put(type, typeCounts.getOrDefault(type, 0) + 1);
+                }
+            });
+        }
+
+        return typeCounts; // 예: {1: 5, 5: 12, 10: 3}
     }
 
     // =========================================================
