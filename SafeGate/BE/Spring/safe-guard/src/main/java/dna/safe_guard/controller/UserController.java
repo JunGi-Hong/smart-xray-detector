@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
+import dna.safe_guard.security.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
 @RequestMapping("/user")
@@ -56,5 +58,18 @@ public class UserController {
             return ResponseEntity.badRequest()
                     .body(new UserResponseDto.Fail(e.getMessage()));
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDto.Profile> getMyProfile(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        UserResponseDto.Profile profile = UserResponseDto.Profile.builder()
+                .name(userDetails.getName())
+                .email(userDetails.getEmail())
+                .phoneNumber(userDetails.getPhoneNumber())
+                .build();
+
+        return ResponseEntity.ok(profile);
     }
 }

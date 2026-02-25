@@ -10,7 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
+import dna.safe_guard.security.CustomUserDetails;
+import dna.safe_guard.repository.UserRepository;
+import dna.safe_guard.entity.User;
 import java.io.IOException;
 import java.util.Collections;
 
@@ -19,6 +21,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenBlacklistRepository tokenBlacklistRepository;
+    private final UserRepository userRepository; // 추가
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -40,10 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 토큰이 유효하다면 유저 정보를 SecurityContext에 저장
             if (jwtTokenProvider.validateToken(token)) {
                 String email = jwtTokenProvider.getEmail(token);
-
-                // 별도의 권한 설정이 없다면 빈 리스트(Collections.emptyList()) 전달
+                User user = userRepository.findByEmail(email)
+                        .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                CustomUserDetails userDetails = new CustomUserDetails(user);
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

@@ -44,4 +44,15 @@ public class UserResponseDto {
     public static class Fail {
         private String fail;
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Profile {
+        private String name;
+        private String email;
+        @JsonProperty("tel")
+        private String phoneNumber;
+    }
 }
