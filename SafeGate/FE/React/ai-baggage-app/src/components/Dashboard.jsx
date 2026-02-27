@@ -8,7 +8,6 @@ import ReportDateModal from './ReportDateModal'
 import '../style/dashboard.css'
 
 export default function Dashboard() {
-    //const [username, setUsername] = React.useState('이름')
     //팝업창 열림 여부 상태
     const [isModalOpen, setIsModalOpen] = React.useState(false)
     return (

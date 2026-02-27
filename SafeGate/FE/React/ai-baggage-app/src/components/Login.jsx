@@ -47,11 +47,27 @@ export default function Login() {
                 localStorage.setItem('accessToken', data['access token']);
                 localStorage.setItem('refreshToken', data['refresh token']);
 
-                //저장 확인 (개발자 도구 콘솔용, 배포 시 삭제)
                 console.log('토큰 저장 완료:', localStorage.getItem('accessToken'));
 
-                alert('로그인되었습니다.');
-                navigate('/dashboard'); // 대시보드로 이동
+                const userResponse = await fetch('/user/me', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${data['access token']}`,
+                        'Content-Type': 'application/json',
+                    }
+                })
+
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    localStorage.setItem('userInfo', JSON.stringify(userData));
+                    console.log(userData)
+                    alert('로그인되었습니다.');
+                    navigate('/dashboard'); // 대시보드로 이동
+                }
+                else {
+                    alert(`${data.message}(userResponse 오류)`);
+                }
+
             } else {
                 //로그인 실패 처리
                 alert(data.message || '이메일 또는 비밀번호가 일치하지 않습니다.');
