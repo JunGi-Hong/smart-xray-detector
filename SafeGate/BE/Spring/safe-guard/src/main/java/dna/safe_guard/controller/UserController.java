@@ -2,14 +2,13 @@ package dna.safe_guard.controller;
 
 import dna.safe_guard.dto.UserRequestDto;
 import dna.safe_guard.dto.UserResponseDto;
-import dna.safe_guard.security.CustomUserDetails;
 import dna.safe_guard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
+import dna.safe_guard.security.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
 @RequestMapping("/user")
