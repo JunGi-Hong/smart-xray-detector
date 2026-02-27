@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import Navbar from "./Navbar"
 import EventTable from "./EventTable"
-import { mockEvents } from "../data/mockEvents"
+//import { mockEvents } from "../data/mockEvents"
 import { useSearchParams } from "react-router-dom"
 import Pagination from "./Pagination"
 import '../style/event-history.css'
@@ -40,8 +40,6 @@ export default function History() {
         const fetchData = async (e) => {
             try {
                 const token = localStorage.getItem('accessToken')
-                console.log("현재 토큰 값:", token);
-                console.log("보낼 헤더 값:", `Bearer ${token}`);
                 const response = await fetch(`/board/${currentPage}`, {
                     method: 'GET',
                     headers: {

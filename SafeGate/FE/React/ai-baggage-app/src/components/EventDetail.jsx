@@ -2,41 +2,38 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from './Navbar'
 import '../style/event-detail.css'
+import { ITEM_MAP } from '../data/ItemID'
 
 export default function EventDetail() {
-
-    const mockData = {
-        "src": "202601201231221.png", // 실제로는 이미지 URL
-        "start-time": "202601201220",
-        "detect": "라이터, 칼, 배터리, 가스통" // 문자열을 배열로 변환하여 사용
-    }
 
     //get param from react router url...
     const { eventID } = useParams()
     const navigate = useNavigate()
-    const [eventData, setEventData] = useState(mockData)
+    const [eventData, setEventData] = useState(null)
 
     console.log(eventID)
 
     const fetchEventData = async (e) => {
         try {
             //event id 에 맞는 data fetch해오기
+            const accessToken = localStorage.getItem('accessToken')
             const response = await fetch(`/board/detail/${eventID}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
                 },
             })
+
             if (!response.ok) {
                 throw new Error(`서버 에러: ${response.status}`);
             }
             const data = await response.json()
+            console.log(data)
             setEventData(data)
         } catch (error) {
             alert('error')
-            console.error('failed to lad data')
-        } finally {
-            setIsLoading(false)
+            console.error('failed to load data')
         }
     }
 
@@ -78,9 +75,20 @@ export default function EventDetail() {
                         <div className="list-section">
                             <h3>위험물 목록:</h3>
                             <ul>
-                                {eventData.detect.split(',').map((item, index) => (
-                                    <li key={index}>{item.trim()}</li>
-                                ))}
+                                {/* detect가 배열인지 확인 후 바로 map 실행 */}
+                                {/*각각의 코드들을 탐지 물품에 매핑해줘야함.*/}
+                                {Array.isArray(eventData.detect) && eventData.detect.length > 0 ? (
+                                    eventData.detect.map((id, index) => (
+                                        // 1. 중복 키 방지: 같은 물품이 2개 이상 탐지될 경우 id가 중복되어 리액트가 경고를 냅니다.
+                                        // id와 index를 조합하거나 index를 사용하여 고유한 key를 부여하세요.
+                                        <li key={`${id}-${index}`}>
+                                            {/* 2. 매핑 결과 없을 때 대비: ITEM_MAP에 없는 ID(예: 37)가 올 경우를 대비해 기본값을 둡니다. */}
+                                            {ITEM_MAP[Number(id)] || `미분류 물품(코드:${id})`}
+                                        </li>
+                                    ))
+                                ) : (
+                                    <li>탐지된 물품이 없습니다.</li>
+                                )}
                             </ul>
                         </div>
                     </div>
