@@ -3,6 +3,7 @@ package dna.safe_guard.service;
 import dna.safe_guard.dto.BoardDetailResponseDto;
 import dna.safe_guard.dto.BoardListResponseDto;
 import dna.safe_guard.dto.BoardPageResponseDto;
+import dna.safe_guard.dto.RecentEventDto;
 import dna.safe_guard.entity.Detection;
 import dna.safe_guard.entity.Event;
 import dna.safe_guard.repository.DetectionRepository;
@@ -15,12 +16,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList; // 나중에 빈 리스트 반환할 때 필요할 수 있습니다.
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,12 +31,8 @@ public class BoardService {
     private final EventRepository eventRepository;
     private final DetectionRepository detectionRepository;
 
-    // 이미지 경로 (나중에 배포 시 주소 변경 필요!!!)
     private static final String IMAGE_URL_PREFIX = "http://localhost:8080/images/";
 
-    // =========================================================
-    // 1. 목록 조회 (기존 유지)
-    // =========================================================
     @Transactional(readOnly = true)
     public BoardPageResponseDto getBoardList(int pageNumber) {
         int pageIndex = (pageNumber < 1) ? 0 : pageNumber - 1;
@@ -63,9 +60,6 @@ public class BoardService {
                 .build();
     }
 
-    // =========================================================
-    // 2. 상세 조회 (기존 유지)
-    // =========================================================
     @Transactional(readOnly = true)
     public BoardDetailResponseDto getBoardDetail(Long eventId) {
         Event event = eventRepository.findById(eventId)
@@ -81,91 +75,128 @@ public class BoardService {
             fileName = timeStr.replace("-", "")
                     .replace(":", "")
                     .replace(" ", "")
-                    + ".png";
+                    + "1.png";
         }
 
         return BoardDetailResponseDto.builder()
                 .src(IMAGE_URL_PREFIX + fileName)
                 .startTime(event.getStartTime())
-                .detect(extractDetectedList(detection))
+                .detect(extractDetectedList(detection)) // 기존 배열 방식 유지
                 .build();
     }
 
-    // =========================================================
-    // 3. 최근 7일 데이터 조회 (새로 추가! 🚀)
-    // =========================================================
     @Transactional(readOnly = true)
-    public Map<Integer, Integer> getRecentTypeCounts() {
-        // 1. 최근 7일 시점 계산
-        String sevenDaysAgo = LocalDateTime.now().minusDays(7)
-                .format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+    public List<RecentEventDto> getRecentEventList() {
+        String sevenDaysAgo = LocalDate.now().minusDays(7)
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
 
-        // 2. 해당 기간의 모든 이벤트 조회
-        List<Event> events = eventRepository.findAllByStartTimeGreaterThanEqual(sevenDaysAgo);
+        List<Detection> detections = detectionRepository.findAllWithEventByStartTimeAfter(sevenDaysAgo);
 
-        // 3. 타입별 합계 계산용 Map 생성
-        Map<Integer, Integer> typeCounts = new HashMap<>();
-
-        for (Event event : events) {
-            // 각 이벤트의 탐지 데이터를 가져와서 유효한 타입 번호들만 추출
-            detectionRepository.findByEventId(event.getId()).ifPresent(d -> {
-                List<Integer> detectedTypes = extractDetectedList(d); // 기존 0~37 체크 로직 활용
-                for (Integer type : detectedTypes) {
-                    // 타입별로 카운트 증가
-                    typeCounts.put(type, typeCounts.getOrDefault(type, 0) + 1);
-                }
-            });
-        }
-
-        return typeCounts; // 예: {1: 5, 5: 12, 10: 3}
+        return detections.stream().map(detection ->
+                RecentEventDto.builder()
+                        .detect(extractDetectedMap(detection))
+                        .build()
+        ).collect(Collectors.toList());
     }
 
-    // =========================================================
-    // 4. 보조 메서드들
-    // =========================================================
+    private Map<Integer, Integer> extractDetectedMap(Detection d) {
+        Map<Integer, Integer> map = new HashMap<>();
+        addTypeToMap(map, 0, d.getType0());
+        addTypeToMap(map, 1, d.getType1());
+        addTypeToMap(map, 2, d.getType2());
+        addTypeToMap(map, 3, d.getType3());
+        addTypeToMap(map, 4, d.getType4());
+        addTypeToMap(map, 5, d.getType5());
+        addTypeToMap(map, 6, d.getType6());
+        addTypeToMap(map, 7, d.getType7());
+        addTypeToMap(map, 8, d.getType8());
+        addTypeToMap(map, 9, d.getType9());
+        addTypeToMap(map, 10, d.getType10());
+        addTypeToMap(map, 11, d.getType11());
+        addTypeToMap(map, 12, d.getType12());
+        addTypeToMap(map, 13, d.getType13());
+        addTypeToMap(map, 14, d.getType14());
+        addTypeToMap(map, 15, d.getType15());
+        addTypeToMap(map, 16, d.getType16());
+        addTypeToMap(map, 17, d.getType17());
+        addTypeToMap(map, 18, d.getType18());
+        addTypeToMap(map, 19, d.getType19());
+        addTypeToMap(map, 20, d.getType20());
+        addTypeToMap(map, 21, d.getType21());
+        addTypeToMap(map, 22, d.getType22());
+        addTypeToMap(map, 23, d.getType23());
+        addTypeToMap(map, 24, d.getType24());
+        addTypeToMap(map, 25, d.getType25());
+        addTypeToMap(map, 26, d.getType26());
+        addTypeToMap(map, 27, d.getType27());
+        addTypeToMap(map, 28, d.getType28());
+        addTypeToMap(map, 29, d.getType29());
+        addTypeToMap(map, 30, d.getType30());
+        addTypeToMap(map, 31, d.getType31());
+        addTypeToMap(map, 32, d.getType32());
+        addTypeToMap(map, 33, d.getType33());
+        addTypeToMap(map, 34, d.getType34());
+        addTypeToMap(map, 35, d.getType35());
+        addTypeToMap(map, 36, d.getType36());
+        addTypeToMap(map, 37, d.getType37());
+        return map;
+    }
+
+    private void addTypeToMap(Map<Integer, Integer> map, int typeNumber, Integer count) {
+        if (count != null && count > 0) {
+            map.put(typeNumber, count);
+        }
+    }
+
     private List<Integer> extractDetectedList(Detection d) {
         List<Integer> list = new ArrayList<>();
-        // ... (기존 isValid 체크 로직들 0~37번 그대로 유지)
-        if (isValid(d.getType0())) list.add(0);
-        if (isValid(d.getType1())) list.add(1);
-        if (isValid(d.getType2())) list.add(2);
-        if (isValid(d.getType3())) list.add(3);
-        if (isValid(d.getType4())) list.add(4);
-        if (isValid(d.getType5())) list.add(5);
-        if (isValid(d.getType6())) list.add(6);
-        if (isValid(d.getType7())) list.add(7);
-        if (isValid(d.getType8())) list.add(8);
-        if (isValid(d.getType9())) list.add(9);
-        if (isValid(d.getType10())) list.add(10);
-        if (isValid(d.getType11())) list.add(11);
-        if (isValid(d.getType12())) list.add(12);
-        if (isValid(d.getType13())) list.add(13);
-        if (isValid(d.getType14())) list.add(14);
-        if (isValid(d.getType15())) list.add(15);
-        if (isValid(d.getType16())) list.add(16);
-        if (isValid(d.getType17())) list.add(17);
-        if (isValid(d.getType18())) list.add(18);
-        if (isValid(d.getType19())) list.add(19);
-        if (isValid(d.getType20())) list.add(20);
-        if (isValid(d.getType21())) list.add(21);
-        if (isValid(d.getType22())) list.add(22);
-        if (isValid(d.getType23())) list.add(23);
-        if (isValid(d.getType24())) list.add(24);
-        if (isValid(d.getType25())) list.add(25);
-        if (isValid(d.getType26())) list.add(26);
-        if (isValid(d.getType27())) list.add(27);
-        if (isValid(d.getType28())) list.add(28);
-        if (isValid(d.getType29())) list.add(29);
-        if (isValid(d.getType30())) list.add(30);
-        if (isValid(d.getType31())) list.add(31);
-        if (isValid(d.getType32())) list.add(32);
-        if (isValid(d.getType33())) list.add(33);
-        if (isValid(d.getType34())) list.add(34);
-        if (isValid(d.getType35())) list.add(35);
-        if (isValid(d.getType36())) list.add(36);
-        if (isValid(d.getType37())) list.add(37);
-
+        addTypeCount(list, 0, d.getType0());
+        addTypeCount(list, 1, d.getType1());
+        addTypeCount(list, 2, d.getType2());
+        addTypeCount(list, 3, d.getType3());
+        addTypeCount(list, 4, d.getType4());
+        addTypeCount(list, 5, d.getType5());
+        addTypeCount(list, 6, d.getType6());
+        addTypeCount(list, 7, d.getType7());
+        addTypeCount(list, 8, d.getType8());
+        addTypeCount(list, 9, d.getType9());
+        addTypeCount(list, 10, d.getType10());
+        addTypeCount(list, 11, d.getType11());
+        addTypeCount(list, 12, d.getType12());
+        addTypeCount(list, 13, d.getType13());
+        addTypeCount(list, 14, d.getType14());
+        addTypeCount(list, 15, d.getType15());
+        addTypeCount(list, 16, d.getType16());
+        addTypeCount(list, 17, d.getType17());
+        addTypeCount(list, 18, d.getType18());
+        addTypeCount(list, 19, d.getType19());
+        addTypeCount(list, 20, d.getType20());
+        addTypeCount(list, 21, d.getType21());
+        addTypeCount(list, 22, d.getType22());
+        addTypeCount(list, 23, d.getType23());
+        addTypeCount(list, 24, d.getType24());
+        addTypeCount(list, 25, d.getType25());
+        addTypeCount(list, 26, d.getType26());
+        addTypeCount(list, 27, d.getType27());
+        addTypeCount(list, 28, d.getType28());
+        addTypeCount(list, 29, d.getType29());
+        addTypeCount(list, 30, d.getType30());
+        addTypeCount(list, 31, d.getType31());
+        addTypeCount(list, 32, d.getType32());
+        addTypeCount(list, 33, d.getType33());
+        addTypeCount(list, 34, d.getType34());
+        addTypeCount(list, 35, d.getType35());
+        addTypeCount(list, 36, d.getType36());
+        addTypeCount(list, 37, d.getType37());
         return list;
+    }
+
+    private void addTypeCount(List<Integer> list, int typeNumber, Integer count) {
+        if (count != null && count > 0) {
+            for (int i = 0; i < count; i++) {
+                list.add(typeNumber);
+            }
+        }
     }
 
     private boolean isValid(Integer value) {

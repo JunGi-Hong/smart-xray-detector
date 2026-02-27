@@ -2,13 +2,14 @@ package dna.safe_guard.controller;
 
 import dna.safe_guard.dto.BoardDetailResponseDto;
 import dna.safe_guard.dto.BoardPageResponseDto;
+import dna.safe_guard.dto.RecentEventDto;
 import dna.safe_guard.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,22 +53,17 @@ public class BoardController {
         }
     }
 
-    // 3. 최근 일주일치 원본 데이터 리스트 조회 (추가됨! 🚀)
-    // BoardController.java
-    @GetMapping("/statistics/recent")
-    public ResponseEntity<?> getRecentTypeStatistics() {
+    // 3. 최근 일주일치 원본 데이터 리스트 조회
+    @GetMapping("/events/recent")
+    public ResponseEntity<?> getRecentEvents() {
         try {
-            // 타입별 총 개수가 담긴 Map을 가져옵니다.
-            Map<Integer, Integer> statistics = boardService.getRecentTypeCounts();
+            List<RecentEventDto> events = boardService.getRecentEventList();
 
-            if (statistics.isEmpty()) {
+            if (events.isEmpty()) {
                 return ResponseEntity.status(400).body(Collections.singletonMap("fail", "no-data"));
             }
-
-            return ResponseEntity.ok(statistics); // JSON 객체 형태로 반환
-
+            return ResponseEntity.ok(events);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(400).body(Collections.singletonMap("fail", "internal error"));
         }
     }
