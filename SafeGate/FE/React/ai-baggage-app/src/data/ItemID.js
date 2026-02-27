@@ -32,3 +32,5 @@ export const ITEM_MAP = {
     31: "표창",
     32: "라이터 오일"
 };
+
+export const getName = (id) => ITEM_MAP[id] || `미분류 물품${id}`
