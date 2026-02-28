@@ -31,7 +31,7 @@ public class StatisticsService {
     private String djangoReportUrl;
 
     @Transactional
-    public String generateAndSaveReport(String period) {
+    public byte[] generateAndSaveReport(String period) {
         LocalDate today = LocalDate.now();
         LocalDate start;
 
@@ -80,6 +80,7 @@ public class StatisticsService {
 
         log.info("Django 서버로 통계 리포트 생성 요청 시작... (기간: {})", period);
 
+        // 1. Django에 PDF 생성 요청 (URL 반환 받음)
         ResponseEntity<ReportDto.Response> response = restTemplate.postForEntity(
                 djangoReportUrl, requestDto, ReportDto.Response.class
         );
@@ -90,13 +91,24 @@ public class StatisticsService {
 
         String pdfUrl = response.getBody().getPdfUrl();
 
+        // 2. Spring 서버가 Django 서버의 URL로부터 직접 PDF 바이너리 데이터를 다운로드
+        log.info("Django 서버로부터 PDF 파일을 다운로드합니다: {}", pdfUrl);
+        ResponseEntity<byte[]> fileResponse = restTemplate.getForEntity(pdfUrl, byte[].class);
+        byte[] pdfBytes = fileResponse.getBody();
+
+        if (pdfBytes == null) {
+            throw new RuntimeException("PDF 파일을 읽어오는데 실패했습니다.");
+        }
+
+        // 3. 통계 이력 DB 저장
         Statistics stat = new Statistics();
         stat.setAnalysisStartDate(displayStartDate);
         stat.setAnalysisEndDate(displayEndDate);
-        stat.setDownloadUrl(pdfUrl);
+        stat.setDownloadUrl(pdfUrl); // DB에는 추적을 위해 내부 Django URL을 남겨둠
         statisticsRepository.save(stat);
 
-        return pdfUrl;
+        // 바이너리 파일 데이터 반환
+        return pdfBytes;
     }
 
     private List<String> extractDetectedKoreanNames(Detection d) {
