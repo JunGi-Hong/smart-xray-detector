@@ -40,7 +40,9 @@ export default function PieChart() {
                         id: getName(Number(key)),    // 툴팁이나 식별자로 쓸 이름
                         label: getName(Number(key)), // 화면에 보일 라벨
                         value: tempCounts[key]       // 카운트된 갯수
-                    }));
+                    }))
+                    .sort((a, b) => b.value - a.value) // 1. value 기준으로 내림차순 정렬 (빈도수 높은 순)
+                    .slice(0, 4);                      // 2. 상위 4개 데이터만 추출
 
                 // 상태 업데이트 -> 차트 그려짐
                 setChartData(formattedData);
