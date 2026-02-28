@@ -27,3 +27,23 @@
 .file-upload-button:hover {
     cursor: pointer;
 }
+
+.preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+/* 미리보기 이미지 제한 설정 */
+.image-preview {
+    max-width: 90%;
+    max-height: 200px;
+    /* 박스 높이에 맞춰 조절하세요 */
+    object-fit: contain;
+    /* 이미지 비율 유지 */
+    border-radius: 8px;
+}
