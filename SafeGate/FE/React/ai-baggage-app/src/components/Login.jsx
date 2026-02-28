@@ -82,7 +82,17 @@ export default function Login() {
     const handleKakaoLogin = async (e) => {
         // 카카오 로그인 로직
         e.preventDefault();
-        navigate('/dashboard');
+
+        const CLIENT_ID = '927b620abcb396eb1a9a65ea207c6dc3'; // 아까 말씀하신 REST API 키
+
+        // 주의: 이 부분은 프론트엔드가 인가 코드를 받을 주소로 설정해야 합니다. (예: React 서버가 3000번 포트일 경우)
+        const REDIRECT_URI = 'http://localhost:5173/dashboard';
+
+        // 2. 카카오 인증 URL 만들기
+        const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
+        // 3. 현재 창을 카카오 로그인 페이지로 이동시키기
+        window.location.href = kakaoAuthUrl;
     }
 
     return (
