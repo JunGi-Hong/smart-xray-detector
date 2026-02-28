@@ -7,6 +7,7 @@ import VerifyPassword from './components/VerifyPassword'
 import EditProfile from './components/EditProfile'
 import History from './components/History'
 import EventDetail from './components/EventDetail'
+import KakaoCallback from './components/KakaoCallback'
 import ProtectedRoute from './components/ProtectedRoute'
 
 
@@ -19,6 +20,7 @@ function App() {
       <Routes>
         <Route path='/user/login' element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path='/user/register' element={<Register />} />
+        <Route path='/auth/kakao' element={<KakaoCallback setIsAuthenticated={setIsAuthenticated} />} />
 
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route path='/dashboard' element={<Dashboard />} />

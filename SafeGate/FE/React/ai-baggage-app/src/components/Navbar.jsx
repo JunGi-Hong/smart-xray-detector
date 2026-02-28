@@ -28,9 +28,7 @@ export default function Navbar() {
         } catch (error) {
             console.error("로그 아웃 중 서버 에러 발생(무시하고 진행)")
         } finally {
-            localStorage.removeItem('accessToken')
-            localStorage.removeItem('removeToken')
-            localStorage.removeItem('username')
+            localStorage.clear()
             alert('로그아웃 되었습니다.')
             navigate('/user/login')
         }
