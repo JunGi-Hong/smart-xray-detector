@@ -4,32 +4,28 @@ import React from 'react'
 export default function ReportDateModal({ onClose }) {
 
     //최근 7일이면 A, 최근 30일이면 B
-    const [selectedPeriod, setSelectedPeriod] = React.useState('A')
+    const [selectedPeriod, setSelectedPeriod] = React.useState('week')
 
     //type A/B 전달
     const handleSave = async (e) => {
         e.preventDefault()
-        /*try {
-            const response = fetch('/report/', {
-                method: 'POST',
+        try {
+            const accessToken = localStorage.getItem('accessToken')
+            const response = await fetch(`/report?period=${selectedPeriod}`, {
+                method: 'GET',
                 headers: {
-                    'Content-type': 'application/json'
-                },
-                body: {
-                    'type': selectedPeriod
+                    'Authorization': `Bearer ${accessToken}`
                 }
-            })
-            if (response.ok) {
-                alert('successful')
             }
-        }
-        catch (error) {
-            alert('error')
-        }
-        finally {
-            onClose()
-        } */
+            )
+            if (response.ok) {
+                //pass
+                console.log('ok')
+            }
 
+        } catch (error) {
+            console.error(error)
+        }
         onClose()
 
     }
@@ -42,8 +38,8 @@ export default function ReportDateModal({ onClose }) {
                         <label>
                             <input
                                 type='radio'
-                                value='A'
-                                checked={selectedPeriod === 'A'}
+                                value='week'
+                                checked={selectedPeriod === 'week'}
                                 onChange={(e) => setSelectedPeriod(e.target.value)}
                             />
                             최근 7일
@@ -51,8 +47,8 @@ export default function ReportDateModal({ onClose }) {
                         <label>
                             <input
                                 type='radio'
-                                value='B'
-                                checked={selectedPeriod === 'B'}
+                                value='month'
+                                checked={selectedPeriod === 'month'}
                                 onChange={(e) => setSelectedPeriod(e.target.value)}
                             />
                             최근 30일
