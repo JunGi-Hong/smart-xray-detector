@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 
 
-export default function Login() {
+export default function Login({ setIsAuthenticated }) {
     const navigate = useNavigate();
     const [loginData, setLoginData] = React.useState({
         'email': '',
@@ -61,8 +61,9 @@ export default function Login() {
                     const userData = await userResponse.json();
                     localStorage.setItem('userInfo', JSON.stringify(userData));
                     console.log(userData)
-                    alert('로그인되었습니다.');
-                    navigate('/dashboard'); // 대시보드로 이동
+                    alert('로그인되었습니다.')
+                    setIsAuthenticated(true)
+                    navigate('/dashboard') // 대시보드로 이동
                 }
                 else {
                     alert(`${data.message}(userResponse 오류)`);
