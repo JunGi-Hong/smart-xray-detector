@@ -100,6 +100,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
+YOLO_MODEL_PATH = os.getenv('YOLO_MODEL_PATH')
+
 # DEBUG 모드(개발 환경)일 때만 브라우저 UI 렌더러 추가
 if DEBUG:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'].append('rest_framework.renderers.BrowsableAPIRenderer')
