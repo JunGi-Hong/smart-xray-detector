@@ -25,4 +25,8 @@ public class AiDetectionResponseDto {
 
     @JsonProperty("image_base64")
     private String imageBase64;
+
+    @JsonProperty("event-id")
+    private Long eventId;
+
 }

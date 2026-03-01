@@ -124,7 +124,7 @@ public class AiService {
     }
 
     @Transactional
-    public void saveDetectionResultToDB(String src, AiDetectionResponseDto aiResult, String userEmail) {
+    public Long saveDetectionResultToDB(String src, AiDetectionResponseDto aiResult, String userEmail) {
         String dynamicTitle = generateTitle(aiResult);
 
         User user = userRepository.findByEmail(userEmail)
@@ -148,6 +148,7 @@ public class AiService {
         detectionRepository.save(detection);
         log.info("DB 저장 완료: Event ID = {}, 제목 = {}", event.getId(), dynamicTitle);
 
+        return event.getId();
         /* 탐지된 경우 사용자에게 events 테이블 저장 및 메일 전송
         if (aiResult.getTotalDetected() != null && aiResult.getTotalDetected() > 0) {
             sendAlertEmail(aiResult, event);
