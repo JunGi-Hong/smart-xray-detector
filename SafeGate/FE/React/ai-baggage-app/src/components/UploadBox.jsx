@@ -62,7 +62,6 @@ export default function UploadBox() {
         setIsUploading(true) // 로딩 시작
         try {
             const accessToken = localStorage.getItem('accessToken')
-            console
             const response = await fetch('/x-ray/image-upload', {
                 method: 'POST',
                 headers: {
@@ -81,7 +80,7 @@ export default function UploadBox() {
             console.log("AI 분석 완료: ", aiResult)
             // 성공 시 상세 페이지로 이동
             //const eventId = aiResult.id
-            //navigate(`/history/detail/${eventId}`)
+            navigate(`/history/detail/${aiResult["event-id"]}`)
 
         } catch (error) {
             console.error("에러 발생:", error)

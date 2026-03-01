@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       //로컬 환경에서 돌아갈 수 있게..
       // '/user'로 시작하는 요청이 오면 백엔드(8080)로 전달
-      '^/(user|board|x-ray|report)': {
+      '^/(user|board|x-ray|report|x-ray)': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,

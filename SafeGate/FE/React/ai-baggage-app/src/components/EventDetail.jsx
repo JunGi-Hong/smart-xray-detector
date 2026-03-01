@@ -43,11 +43,6 @@ export default function EventDetail() {
 
     if (!eventData) return <div className="loading">데이터를 불러오는 중...</div>;
 
-    const formatTime = (timeStr) => {
-        if (!timeStr) return '';
-        return `${timeStr.slice(0, 4)}-${timeStr.slice(4, 6)}-${timeStr.slice(6, 8)} / ${timeStr.slice(8, 10)}:${timeStr.slice(10, 12)}`;
-    };
-
     //if (isLoading) return <div className="loading">로딩 중...</div>;
     if (!eventData) return <div className="loading">데이터를 찾을 수 없습니다.</div>;
 
@@ -58,14 +53,14 @@ export default function EventDetail() {
             <div className="detail-container">
                 <div className="detail-card">
                     <h2 className="detail-title">
-                        위해물품 탐지 - {formatTime(eventData["start-time"])}
+                        위해물품 탐지 - {(eventData["start-time"])}
                     </h2>
 
                     <div className="detail-content">
                         {/* 왼쪽: 이미지 영역 */}
                         <div className="image-section">
                             <img
-                                src={`/images/${eventData.src}`}
+                                src={eventData.src}
                                 alt="X-ray Scan"
                             //onError={(e) => e.target.src = 'https://via.placeholder.com/500x300?text=X-ray+Image'}
                             />
@@ -78,12 +73,17 @@ export default function EventDetail() {
                                 {/* detect가 배열인지 확인 후 바로 map 실행 */}
                                 {/*각각의 코드들을 탐지 물품에 매핑해줘야함.*/}
                                 {Array.isArray(eventData.detect) && eventData.detect.length > 0 ? (
-                                    eventData.detect.map((id, index) => (
-                                        // 1. 중복 키 방지: 같은 물품이 2개 이상 탐지될 경우 id가 중복되어 리액트가 경고를 냅니다.
-                                        // id와 index를 조합하거나 index를 사용하여 고유한 key를 부여하세요.
+                                    // 1. 중복된 ID의 개수를 객체 형태로 셉니다. (예: { "1": 2, "3": 1 })
+                                    Object.entries(
+                                        eventData.detect.reduce((acc, id) => {
+                                            acc[id] = (acc[id] || 0) + 1;
+                                            return acc;
+                                        }, {})
+                                    ).map(([id, count], index) => (
+                                        // 2. 센 결과를 화면에 출력합니다.
                                         <li key={`${id}-${index}`}>
-                                            {/* 2. 매핑 결과 없을 때 대비: ITEM_MAP에 없는 ID(예: 37)가 올 경우를 대비해 기본값을 둡니다. */}
                                             {ITEM_MAP[Number(id)] || `미분류 물품(코드:${id})`}
+                                            {count > 1 && ` (x${count})`} {/* 개수가 2개 이상일 때만 수량 표시 */}
                                         </li>
                                     ))
                                 ) : (
