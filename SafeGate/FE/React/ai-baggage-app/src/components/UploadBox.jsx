@@ -49,6 +49,7 @@ export default function UploadBox() {
 
 
     const handleSubmit = async (e) => {
+        if (isUploading) return
         e.preventDefault()
 
         if (!selectedFile) {
