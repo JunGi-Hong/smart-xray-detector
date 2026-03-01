@@ -14,33 +14,40 @@ export default function VerifyPassword() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        /*try {
+        if (localStorage.getItem('userInfo') === null) {
+            alert('카카오로 로그인한 유저는 회원 정보 수정 불가')
+            navigate('/dashboard')
+            return
+        }
+
+        const userInfoString = localStorage.getItem('userInfo')
+        //카카오로 로그인 한 경우 해당 로컬 스토리지 데이터가 없다 -> 핸들링 필요
+        const accessToken = localStorage.getItem('accessToken')
+
+        try {
+            const userInfo = JSON.parse(userInfoString)
             const response = await fetch('/user/verify-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({
-                    //data to verify user
+                    email: userInfo.email,
                     password: password
                 })
             })
             if (response.ok) {
-                navigate('/edit-profile')
+                navigate('/user/edit-profile')
             } else {
                 console.log(response.message)
-                alert('잘못된 비밀번호. 다시 입력하세요.')
+                alert('잘못된 비밀번호.')
             }
 
         }
         catch (error) {
             console.error('Verifiy password error')
             alert('오류 발생')
-        } */
-        const success = true
-
-        if (success) {
-            navigate('/user/edit-profile')
         }
     }
     return (

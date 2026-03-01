@@ -3,11 +3,9 @@ import '../style/navbar.css'
 import ClientIcon from '../assets/client.png'
 import LogoutIcon from '../assets/logout.png'
 import HistoryIcon from '../assets/history.png'
-import { useUser } from '../contexts/UserContext'
 
 export default function Navbar() {
     const navigate = useNavigate()
-    const user = useUser()
     const username = localStorage.getItem('username')
 
     const handleLogout = async (e) => {
