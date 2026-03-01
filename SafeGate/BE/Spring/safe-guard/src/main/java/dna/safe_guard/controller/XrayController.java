@@ -37,7 +37,6 @@ public class XrayController {
             AiDetectionResponseDto aiResult = aiService.analyzeImageWithDjango(savedLocalPath);
             Long savedEventId = aiService.saveDetectionResultToDB(dbStartTime, aiResult, userDetails.getEmail());
             aiResult.setEventId(savedEventId);
-            aiService.saveDetectionResultToDB(dbStartTime, aiResult, userDetails.getEmail());
 
             return ResponseEntity.ok(aiResult);
 
