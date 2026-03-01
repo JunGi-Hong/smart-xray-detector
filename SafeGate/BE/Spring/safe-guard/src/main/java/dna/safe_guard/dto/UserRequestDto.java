@@ -37,4 +37,11 @@ public class UserRequestDto {
         @JsonProperty("tel")
         private String phoneNumber;
     }
+
+    @Getter
+    @Setter
+    public static class VerifyPassword {
+        private String email;
+        private String password;
+    }
 }

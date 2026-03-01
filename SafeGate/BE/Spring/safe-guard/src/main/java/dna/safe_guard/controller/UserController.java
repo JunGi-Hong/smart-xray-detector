@@ -72,4 +72,16 @@ public class UserController {
 
         return ResponseEntity.ok(profile);
     }
+
+    @PostMapping("/verify-password")
+    public ResponseEntity<?> verifyPassword(@RequestBody UserRequestDto.VerifyPassword dto) {
+        try {
+            userService.verifyPassword(dto);
+            return ResponseEntity.ok(new UserResponseDto.Message("success"));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400)
+                    .body(new UserResponseDto.Fail(e.getMessage()));
+        }
+    }
 }

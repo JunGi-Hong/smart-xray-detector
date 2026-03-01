@@ -102,4 +102,16 @@ public class UserService {
         // 6. 변경사항 저장
         userRepository.save(user);
     }
+
+    @Transactional(readOnly = true)
+    public void verifyPassword(UserRequestDto.VerifyPassword dto) {
+        // 1. 이메일로 사용자 조회 (없으면 예외 발생 - 보안상 '비밀번호 틀림'과 동일한 메시지 반환이 좋음)
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("pw incorrect"));
+
+        // 2. 비밀번호 일치 여부 확인
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("pw incorrect");
+        }
+    }
 }
