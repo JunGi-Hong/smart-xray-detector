@@ -20,29 +20,34 @@ export default function PieChart() {
             if (response.ok) {
                 const responseData = await response.json();
 
-                const tempCounts = Object.fromEntries(
-                    Array.from({ length: 32 }, (_, i) => [i + 1, 0])
-                );
+                // 1. 빈 객체로 시작 (아이디가 몇 번까지 올지 모르니 동적으로 할당)
+                const tempCounts = {};
 
-                // 2. 옵셔널 체이닝(?.) 적용으로 빈 데이터/오류 대비
+                // 2. 객체 형태의 detect 데이터를 순회하며 카운트 누적
                 responseData.forEach(event => {
-                    event.detect?.forEach(value => {
-                        if (tempCounts[value] !== undefined) {
-                            tempCounts[value] += 1;
-                        }
-                    });
+                    // event.detect가 존재하고, 객체 형태일 때만 실행
+                    if (event.detect && typeof event.detect === 'object') {
+                        // Object.entries를 쓰면 { "37": 2, "3": 1 }를 [["37", 2], ["3", 1]] 형태의 배열로 바꿔서 반복문을 돌릴 수 있습니다.
+                        Object.entries(event.detect).forEach(([id, count]) => {
+                            const numId = Number(id);
+                            // 기존에 값이 있으면 거기에 더하고, 없으면 새로 count를 넣음
+                            tempCounts[numId] = (tempCounts[numId] || 0) + count;
+                        });
+                    }
                 });
 
+                // 3. Nivo 파이 차트 형식에 맞게 데이터 변환 및 필터링
                 const formattedData = Object.keys(tempCounts)
                     .filter(key => tempCounts[key] > 0)
                     .map(key => ({
-                        id: getName(Number(key)),
-                        label: getName(Number(key)),
-                        value: tempCounts[key]
+                        id: getName(Number(key)),    // 툴팁이나 식별자로 쓸 이름
+                        label: getName(Number(key)), // 화면에 보일 라벨
+                        value: tempCounts[key]       // 누적된 갯수
                     }))
-                    .sort((a, b) => b.value - a.value)
-                    .slice(0, 4);
+                    .sort((a, b) => b.value - a.value) // value 기준으로 내림차순 정렬
+                    .slice(0, 4);                      // 상위 4개 데이터만 추출
 
+                // 상태 업데이트 -> 차트 그려짐
                 setChartData(formattedData);
             }
         } catch (error) {

@@ -79,8 +79,6 @@ export default function UploadBox() {
             const aiResult = await response.json()
             //response 처리 추가 필요
             console.log("AI 분석 완료: ", aiResult)
-            //파일 업로드 되었는지 확인해보기
-
             // 성공 시 상세 페이지로 이동
             //const eventId = aiResult.id
             //navigate(`/history/detail/${eventId}`)
