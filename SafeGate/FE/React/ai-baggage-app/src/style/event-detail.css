@@ -1,0 +1,120 @@
+/* 전체 배경 */
+.detail-container {
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Malgun Gothic', sans-serif;
+}
+
+/* 메인 카드 영역 */
+.detail-card {
+    background-color: #eeeeee;
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.detail-title {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+/* 콘텐츠 레이아웃 (가로 정렬) */
+.detail-content {
+    display: flex;
+    gap: 20px;
+}
+
+.image-section {
+    flex: 2;
+    background-color: #fff;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.image-section img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* 위험물 목록 박스 */
+.list-section {
+    flex: 1;
+    background-color: #e9e4d9;
+    /* 이미지의 베이지색상 */
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.list-section h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+.list-section ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.list-section li {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+/* 하단 버튼 바 */
+.button-bar {
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-save {
+    background-color: #3d3a3a;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.profile-badge {
+    width: 50px;
+    height: 50px;
+    background-color: #2e86de;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    border: 3px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-back {
+    background-color: #b1aca0;
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.btn-save:hover,
+.btn-back:hover {
+    opacity: 0.9;
+}
