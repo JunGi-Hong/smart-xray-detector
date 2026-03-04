@@ -1,0 +1,224 @@
+/* 공통 리셋 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    font-family: 'Pretendard', sans-serif;
+}
+
+/* 페이지 전체 레이아웃 */
+.password-page {
+    min-height: calc(100vh - 70px);
+    /* Navbar 높이 고려 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+/* 비밀번호 카드 */
+.password-box {
+    width: 100%;
+    max-width: 420px;
+    background-color: #f0f0f0;
+    padding: 2rem 1.8rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* 제목 */
+.password-box label {
+    display: block;
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.8rem;
+}
+
+/* 입력창 */
+.password-box input {
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+    border: none;
+    padding: 0 1rem;
+    font-size: 1rem;
+    background-color: #e0e0e0;
+    margin-bottom: 1.2rem;
+}
+
+/* 버튼 */
+.password-box button {
+    width: 100%;
+    height: 50px;
+    background-color: #2f2c2c;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 버튼 터치 피드백 */
+.password-box button:active {
+    transform: scale(0.98);
+}
+
+/* =========================
+   전체 페이지 레이아웃
+========================= */
+.edit-profile-page {
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================
+   메인 카드 박스
+========================= */
+.edit-profile-box {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+/* =========================
+   폼 카드
+========================= */
+.edit-profile-box form {
+    width: 100%;
+    max-width: 420px;
+    background-color: #f0f0f0;
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================
+   input 필드
+========================= */
+.input-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.4rem;
+}
+
+.input-field label {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.4rem;
+}
+
+.input-field input {
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: none;
+    background-color: #d9d9d9;
+    font-size: 0.95rem;
+
+}
+
+.input-field input:focus {
+    outline: none;
+    background-color: #d6d6d6;
+}
+
+/* readonly input */
+.input-field input[readOnly] {
+    color: #777;
+    cursor: not-allowed;
+}
+
+.password {
+    display: flex;
+    align-items: baseline;
+}
+
+text {
+    color: #555;
+    font-size: 0.75rem;
+    padding: 5px;
+}
+
+/* =========================
+   버튼 영역
+========================= */
+.save-button,
+.cancel-button {
+    width: 100%;
+    height: 46px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+}
+
+/* 저장 버튼 */
+.save-button {
+    margin-top: 1.2rem;
+    background-color: #2f2c2c;
+    color: white;
+}
+
+.save-button:hover {
+    background-color: #1f1d1d;
+}
+
+/* 취소 버튼 */
+.cancel-button {
+    margin-top: 0.8rem;
+    background-color: #c2bdaa;
+    color: #333;
+}
+
+.cancel-button:hover {
+    background-color: #b5b09b;
+}
+
+
+
+/* =========================
+   태블릿 반응형
+========================= */
+@media (max-width: 768px) {
+    .edit-profile-box form {
+        padding: 2rem 1.5rem;
+    }
+}
+
+/* =========================
+   모바일 반응형
+========================= */
+@media (max-width: 480px) {
+    .edit-profile-box {
+        padding: 1.5rem 0.8rem;
+    }
+
+    .edit-profile-box form {
+        padding: 1.8rem 1.2rem;
+        border-radius: 10px;
+    }
+
+    .input-field label {
+        font-size: 0.85rem;
+    }
+
+    .input-field input {
+        height: 42px;
+        font-size: 0.9rem;
+    }
+
+    .save-button,
+    .cancel-button {
+        height: 44px;
+        font-size: 0.9rem;
+    }
+}

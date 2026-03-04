@@ -1,0 +1,87 @@
+body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /*background-color: rgb(196, 195, 195);*/
+}
+
+
+/*로그인창 css*/
+.login-header {
+    display: flex;
+    height: 3.5rem;
+    background-color: #EAE4D5;
+    justify-content: center;
+}
+
+.login-header-title {
+    padding: 5px;
+    margin: 0;
+    opacity: 1;
+    color: rgb(113, 112, 112);
+    font-weight: 300;
+}
+
+
+.login-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 85vh;
+}
+
+.login-box {
+    padding: 25px;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+}
+
+.login-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 400px;
+    height: 150px;
+}
+
+.login-input {
+    border: none;
+    padding: 10px;
+    background-color: #d9d9d9;
+    border-radius: 8px;
+}
+
+
+.login-button {
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #322E2E;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.kakao-login-button {
+    width: 400px;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #F9E000;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.register {
+    padding: 5px;
+    color: inherit;
+    font-size: 0.8rem;
+    color: gray;
+}

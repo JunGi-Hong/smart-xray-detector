@@ -1,0 +1,50 @@
+.event-page {
+    padding: 0;
+    margin: 0;
+}
+
+/* 테이블 */
+.event-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f7f7f7;
+}
+
+.event-table th,
+.event-table td {
+    border-bottom: 2px solid #222;
+    padding: 1rem;
+    text-align: center;
+}
+
+.event-table thead {
+    background-color: #f0f0f0;
+}
+
+.event-table .time {
+    text-decoration: underline;
+}
+
+/* 페이지네이션 */
+.pagination {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.pagination button {
+    margin: 0 0.25rem;
+    padding: 0.4rem 0.7rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
