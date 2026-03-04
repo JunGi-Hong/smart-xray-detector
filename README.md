@@ -2,6 +2,9 @@
 <h1 align="center">🛡️ SafeGate 🛡️<span style="font-size:1.2em;"></span></h1>
 
 <p align="center">
+  <a href="https://react.dev/">
+  <img src="https://img.shields.io/static/v1?label=React&message=Frontend&color=61DAFB&logo=react&logoColor=white" alt="React">
+</a>
   <a href="https://spring.io/projects/spring-boot">
   <img src="https://img.shields.io/static/v1?label=Spring%20Boot&message=Backend&color=green&logo=springboot" alt="Spring Boot">
   </a>
@@ -47,6 +50,16 @@
 ## 📁 폴더 구조 (Folder structure)
 ```bash
 SafeGate/
+├── FE/React/ai-baggage-app
+│   ├── src/
+│       ├── assets/              # 아이콘 이미지
+│       ├── components/          # UI 컴포넌트
+│       ├── data/                # 물품 ID
+│       ├── style/               # CSS
+│       ├── App.jsx              #루트 컴포넌트
+│       ├── main.jsx             #html 연결
+│   ├── index.html               #index           
+│   ├── package.json             #설정 파일
 ├── BE/Spring/safe-guard/        # [Spring Boot] 메인 백엔드 서버
 │   ├── src/main/java/dna/safe_guard/
 │   │   ├── config/              # RestTemplate, WebMvc 설정
@@ -75,7 +88,7 @@ SafeGate/
 <br>
 
 ## 🖥️ 실행 환경 및 요구사항 (Run Environment)
-
+- **React Frontend:** Node.js v24.11.1
 - **Java Backend:** Java 17+, Spring Boot 3.x
 - **Python Backend:** Python 3.9+, Django
 - **Database:** MySQL 8.0+
@@ -156,6 +169,17 @@ python -m uvicorn config.asgi:application --reload --host 127.0.0.1 --port 8000
 ```bash
 cd spring-server
 ./gradlew bootRun
+```
+
+**터미널 3: React 서버 실행 (포트 5173)**
+```bash
+cd FE/React/ai-baggage-app
+
+#라이브러리 설치
+npm install
+
+#서버 실행
+npm run dev
 ```
 
 <br>
